@@ -11,9 +11,16 @@ func main() {
 	database.InitDB()
 	defer database.DB.Close()
 
-	e := echo.New()
-	e.GET("/", handler.Wellcom)
-	e.GET("/user/login", handler.Dangnhap)
-	e.GET("/user/login-sign-up", handler.Dangki)
-	e.Logger.Fatal(e.Start(":3000"))
+	userHandler := handler.UserHandler{
+		UserRepo : repo_impl.NewUserRepo(sql),
+	}
+api:= router.API{
+	Echo: e,
+	UserHandler: userHandler,
 }
+api.SetupRouter()
+
+	e.Logger.Fatal(e.Start(":3000"))
+
+}
+
